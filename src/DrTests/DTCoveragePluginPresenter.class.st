@@ -57,7 +57,7 @@ DTCoveragePluginPresenter >> connectPresenters [
 					subResults ] ].
 
 	resultsList whenSelectionChangedDo: [ :selection |
-		(selection selectedItem isKindOf: DTTestLeafNode) ifTrue: [
+		(selection selectedItem isKindOf: DTTestCoverageLeafNode) ifTrue: [
 			selection selectedItem ifNotNil: [ :item |
 				self updateSourceCodePanel: item content ] ] ]
 ]

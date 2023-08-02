@@ -92,7 +92,8 @@ DTTestCoveragePlugin >> runForConfiguration: aDTpluginConfiguration [
 		result
 			percent: 1s2 - (notExecuted size / methods size asScaledDecimal: 2);
 			methodList: notExecuted;
-			partiallyCoveredMethods: coverage partiallyCoveredMethods ].
+			partiallyCoveredMethods: coverage partiallyCoveredMethods;
+			coveredMethods: coverage coveredMethods ].
 	^ result
 ]
 

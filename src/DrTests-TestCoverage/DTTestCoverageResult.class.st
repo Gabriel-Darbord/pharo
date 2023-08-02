@@ -10,7 +10,8 @@ Class {
 	#instVars : [
 		'methodList',
 		'percent',
-		'partiallyCoveredMethods'
+		'partiallyCoveredMethods',
+		'coveredMethods'
 	],
 	#category : #'DrTests-TestCoverage'
 }
@@ -35,6 +36,7 @@ DTTestCoverageResult >> buildTreeByClass: aMethodList [
 
 { #category : #accessing }
 DTTestCoverageResult >> buildTreeForUI [
+
 	<dtTestCoverageResultTreeNamed: 'List of uncovered methods' order: 1>
 	^ DTTreeNode new
 		subResults: (self methodList 
@@ -50,6 +52,10 @@ DTTestCoverageResult >> buildTreeForUI [
          (DTTreeNode new
             name: 'Partially covered methods';
             subResults: (self buildTreeByClass: partiallyCoveredMethods );
+            yourself).
+			(DTTreeNode new
+            name: 'Covered methods';
+            subResults: (self buildTreeByClass: coveredMethods );
             yourself)}
     	]ifNil: [
        	 {(DTTreeNode new
@@ -57,6 +63,18 @@ DTTestCoverageResult >> buildTreeForUI [
       	 	    subResults: {};
              yourself)}
     	])
+]
+
+{ #category : #accessing }
+DTTestCoverageResult >> coveredMethods [
+
+	^ coveredMethods
+]
+
+{ #category : #accessing }
+DTTestCoverageResult >> coveredMethods: aCollectionOfMethods [
+
+	coveredMethods := aCollectionOfMethods
 ]
 
 { #category : #accessing }
