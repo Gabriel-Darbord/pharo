@@ -63,7 +63,7 @@ DTTestCoverageTest >> testDTTestCoverageResultHas2Nodes [
 
 	| resultTree |
 	resultTree := (plugin runForConfiguration: pluginConfiguration) buildTreeForUI.
-	self assert: resultTree subResults size equals: 3
+	self assert: resultTree subResults size equals: 4
 ]
 
 { #category : #improvements }
@@ -73,6 +73,7 @@ DTTestCoverageTest >> testDTTestCoverageResultHasCovered_Uncovered_PartiallyCove
 	result := plugin runForConfiguration: pluginConfiguration.
 	self assert: result methodList size equals: 1.
 	self assert: result partiallyCoveredMethods size equals: 1 .
+	self assert: result coveredMethods size equals: 1 .
 ]
 
 { #category : #running }
@@ -89,9 +90,10 @@ DTTestCoverageTest >> testDTTestCoverageResultTheFirstNodeIsPercent [
 { #category : #running }
 DTTestCoverageTest >> testDTTestCoverageResultTheSecondNodeSubResultsAreLeafs [
 
-	| resultTree leafs |
+	| resultTree nodeTree leafs |
 	resultTree := (plugin runForConfiguration: pluginConfiguration) buildTreeForUI.
-	leafs := resultTree subResults at: 2.
+	nodeTree := resultTree subResults at: 2.
+	leafs := nodeTree subResults at: 1.
 	self
 		assert: (leafs subResults allSatisfy: #isLeaf )
 ]
@@ -120,6 +122,18 @@ DTTestCoverageTest >> testNotExecutedMethodList [
 						anySatisfy: [ :anyMethod |
 							anyMethod methodClass = expectedNotExecutedMethod methodClass
 								and: [ anyMethod selector = expectedNotExecutedMethod selector ] ] ])
+]
+
+{ #category : #improvements }
+DTTestCoverageTest >> testOnlyMethodNodeDisplayed [
+
+	| resultTree treeNode leaf |
+	resultTree := (plugin runForConfiguration: pluginConfiguration)
+		              buildTreeForUI.
+	treeNode := resultTree subResults at: 3.
+	leaf := (treeNode subResults at: 1) subResults at: 1.
+
+	self assert: leaf drTestsName equals: 'method3ForMockWithConditional:'
 ]
 
 { #category : #running }
