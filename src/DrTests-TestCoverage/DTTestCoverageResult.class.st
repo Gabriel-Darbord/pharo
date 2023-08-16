@@ -19,19 +19,14 @@ Class {
 { #category : #'tree building' }
 DTTestCoverageResult >> buildTreeByClass: aMethodList [
 
-	| methodsByClasses subResultsTree |
-	methodsByClasses := self methodsGroupedByClass: aMethodList.
-	subResultsTree := {  }.
-	methodsByClasses keysAndValuesDo: [ :key :value |
-		| classNode |
-		classNode := DTTreeNode new
-			             name: key asString;
-			             subResults:
-				             (value collect: [ :each |
-						              each asResultForDrTestCoverage ]);
-			             yourself.
-		subResultsTree := subResultsTree , { classNode } ].
-	^ subResultsTree
+	| subResultsTree |
+	subResultsTree := OrderedCollection new.
+	(aMethodList groupedBy: #methodClass) keysAndValuesDo: [ :key :value |
+		subResultsTree add: (DTTreeNode new
+				 name: key asString;
+				 subResults:
+					 (value collect: [ :each | DTTestCoverageLeafNode content: each ])) ].
+	^ subResultsTree asArray
 ]
 
 { #category : #accessing }
@@ -85,19 +80,6 @@ DTTestCoverageResult >> methodList [
 { #category : #accessing }
 DTTestCoverageResult >> methodList: aCollectionOfMethods [
 	methodList := aCollectionOfMethods
-]
-
-{ #category : #'tree building' }
-DTTestCoverageResult >> methodsGroupedByClass: compiledMethods [
-
-	| dictionary |
-	dictionary := Dictionary new.
-	compiledMethods do: [ :method |
-		| class |
-		class := method methodClass.
-		(dictionary at: class ifAbsentPut: [ OrderedCollection new ]) add:
-			method ].
-	^ dictionary
 ]
 
 { #category : #accessing }
