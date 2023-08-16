@@ -13,10 +13,23 @@ Class {
 	#name : #DTCoverageResult,
 	#superclass : #CoverageResult,
 	#instVars : [
-		'partiallyCoveredMethods'
+		'partiallyCoveredMethods',
+		'coveredMethods'
 	],
 	#category : #'DrTests-TestCoverage'
 }
+
+{ #category : #accessing }
+DTCoverageResult >> coveredMethods [
+
+	^ coveredMethods
+]
+
+{ #category : #accessing }
+DTCoverageResult >> coveredMethods: anObject [
+
+	coveredMethods := anObject
+]
 
 { #category : #accessing }
 DTCoverageResult >> partiallyCoveredMethods [

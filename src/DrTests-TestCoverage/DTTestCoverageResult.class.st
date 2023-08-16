@@ -10,13 +10,28 @@ Class {
 	#instVars : [
 		'methodList',
 		'percent',
-		'partiallyCoveredMethods'
+		'partiallyCoveredMethods',
+		'coveredMethods'
 	],
 	#category : #'DrTests-TestCoverage'
 }
 
+{ #category : #'tree building' }
+DTTestCoverageResult >> buildTreeByClass: aMethodList [
+
+	| subResultsTree |
+	subResultsTree := OrderedCollection new.
+	(aMethodList groupedBy: #methodClass) keysAndValuesDo: [ :key :value |
+		subResultsTree add: (DTTreeNode new
+				 name: key asString;
+				 subResults:
+					 (value collect: [ :each | DTTestCoverageLeafNode content: each ])) ].
+	^ subResultsTree asArray
+]
+
 { #category : #accessing }
 DTTestCoverageResult >> buildTreeForUI [
+
 	<dtTestCoverageResultTreeNamed: 'List of uncovered methods' order: 1>
 	^ DTTreeNode new
 		subResults: (self methodList 
@@ -27,11 +42,15 @@ DTTestCoverageResult >> buildTreeForUI [
             yourself).
         (DTTreeNode new
             name: 'Uncovered methods';
-            subResults: (self methodList collect: [:each | each asResultForDrTest]);
+            subResults: (self buildTreeByClass: methodList );
             yourself).
          (DTTreeNode new
             name: 'Partially covered methods';
-            subResults: (self partiallyCoveredMethods collect: [:each | each asResultForDrTest]);
+            subResults: (self buildTreeByClass: partiallyCoveredMethods );
+            yourself).
+			(DTTreeNode new
+            name: 'Covered methods';
+            subResults: (self buildTreeByClass: coveredMethods );
             yourself)}
     	]ifNil: [
        	 {(DTTreeNode new
@@ -39,6 +58,18 @@ DTTestCoverageResult >> buildTreeForUI [
       	 	    subResults: {};
              yourself)}
     	])
+]
+
+{ #category : #accessing }
+DTTestCoverageResult >> coveredMethods [
+
+	^ coveredMethods
+]
+
+{ #category : #accessing }
+DTTestCoverageResult >> coveredMethods: aCollectionOfMethods [
+
+	coveredMethods := aCollectionOfMethods
 ]
 
 { #category : #accessing }

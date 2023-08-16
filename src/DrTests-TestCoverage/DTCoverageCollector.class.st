@@ -23,7 +23,10 @@ DTCoverageCollector >> basicCollectResult [
 	nodes do: [ :node |
 		node hasBeenExecuted ifTrue: [ res nodes add: node ] ].
 	res partiallyCoveredMethods: (methods select: [ :meth |
-			 meth ast hasBeenExecuted and: [ (self hasAllNodesCovered: meth) not ] ]).
+			 meth ast hasBeenExecuted and: [
+				 (self hasAllNodesCovered: meth) not ] ]).
+	res coveredMethods: (methods select: [ :meth |
+			 meth ast hasBeenExecuted and: [ self hasAllNodesCovered: meth ] ]).
 	^ res
 ]
 
