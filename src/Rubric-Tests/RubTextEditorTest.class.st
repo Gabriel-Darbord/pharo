@@ -23,7 +23,7 @@ RubTextEditorTest >> assertNextJumpPointFrom: actualFrom to: actualTo equals: ex
 
 	actualIndexFrom to: actualIndexTo do: [ :i |
 		self
-			assert: (editor nextWord2: i stopOnUpperCase: true)
+			assert: (editor nextCharacterGroup: i)
 			equals: expectedIndex ]
 ]
 
@@ -35,7 +35,7 @@ RubTextEditorTest >> assertNextJumpPointOf: actual equals: expected [
 	expectedIndex := expected indexOf: $¶.
 
 	self
-		assert: (editor nextWord2: actualIndex stopOnUpperCase: true)
+		assert: (editor nextCharacterGroup: actualIndex)
 		equals: expectedIndex
 ]
 
@@ -47,9 +47,9 @@ RubTextEditorTest >> assertPreviousJumpPointFrom: actualFrom to: actualTo equals
 	actualIndexTo := actualTo indexOf: $¶.
 	expectedIndex := expected indexOf: $¶.
 
-	actualIndexFrom to: actualIndexTo do: [ :i |
+	actualIndexFrom to: actualIndexTo by: -1 do: [ :i |
 		self
-			assert: (editor previousWord2: i stopOnUpperCase: true)
+			assert: (editor previousCharacterGroup: i)
 			equals: expectedIndex ]
 ]
 
@@ -61,7 +61,7 @@ RubTextEditorTest >> assertPreviousJumpPointOf: actual equals: expected [
 	expectedIndex := expected indexOf: $¶.
 
 	self
-		assert: (editor previousWord2: actualIndex stopOnUpperCase: true)
+		assert: (editor previousCharacterGroup: actualIndex)
 		equals: expectedIndex
 ]
 
@@ -143,14 +143,15 @@ RubTextEditorTest >> testNextWordStopOnUpperCase [
 	string := 'loRem ipSum'.
 	editor addString: string.
 
-	self assert: (editor nextWord2: -999 stopOnUpperCase: true) equals: 3. "Out of range means end of text"
-	self assert: (editor nextWord2: 0 stopOnUpperCase: true) equals: 3. "Out of range means end of text"
-	self assert: (editor nextWord2: 999 stopOnUpperCase: true) equals: string size + 1. "Out of range"
+	self assert: (editor nextCharacterGroup: -999) equals: 3. "Out of range means end of text"
+	self assert: (editor nextCharacterGroup: 0) equals: 3. "Out of range means end of text"
+	self assert: (editor nextCharacterGroup: 999) equals: string size + 1. "Out of range"
 
 	self assertNextJumpPointFrom: '¶loRem ipSum' to: 'l¶oRem ipSum' equals: 'lo¶Rem ipSum'.
 	self assertNextJumpPointFrom: 'lo¶Rem ipSum' to: 'loRe¶m ipSum' equals: 'loRem¶ ipSum'.
 
 	self assertNextJumpPointOf: 'loRem¶ ipSum' equals: 'loRem ¶ipSum'.
+
 	self assertNextJumpPointFrom: 'loRem ¶ipSum' to: 'loRem i¶pSum' equals: 'loRem ip¶Sum'.
 
 	self assertNextJumpPointFrom: 'loRem ip¶Sum' to: 'loRem ipSum¶' equals: 'loRem ipSum¶'.
@@ -347,8 +348,8 @@ RubTextEditorTest >> testPreviousWordStopOnUpperCase [
 	string := 'loRem ipSum'.
 	editor addString: string.
 
-	self assert: (editor previousWord2: -999 stopOnUpperCase: true) equals: 1. "Out of range means start of text"
-	self assert: (editor previousWord2: 0 stopOnUpperCase: true) equals: 1. "Out of range means start of text"
+	self assert: (editor previousCharacterGroup: -999) equals: 1. "Out of range means start of text"
+	self assert: (editor previousCharacterGroup: 0) equals: 1. "Out of range means start of text"
 
 	self assertPreviousJumpPointFrom: 'loRem ipSum¶' to: 'loRem ipS¶um' equals: 'loRem ip¶Sum'.
 
