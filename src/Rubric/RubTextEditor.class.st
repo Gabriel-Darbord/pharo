@@ -443,7 +443,10 @@ RubTextEditor >> characterGroupAt: index in: aString [
 			ifFalse: [ ^ #lower ] ].
 
 	"exclude '|<>=' from the syntax and consider them binary"
-	('^"''[](){}$#;:.' includes: character) ifTrue: [ ^ #syntax ].
+	(('^"''[](){}$#;:.' includes: character) or: [
+		 character = $= and: [ (aString at: (index - 1 max: 1)) = $: ] ]) 
+			ifTrue: [ ^ #syntax ].
+
 
 	^ #binary
 ]
